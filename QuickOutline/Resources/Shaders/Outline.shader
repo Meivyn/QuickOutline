@@ -74,6 +74,7 @@ Shader "Custom/Outline" {
         v2f output;
 
         UNITY_SETUP_INSTANCE_ID(input);
+        UNITY_INITIALIZE_OUTPUT(v2f, output);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
         float3 normal = any(input.smoothNormal) ? input.smoothNormal : input.normal;
