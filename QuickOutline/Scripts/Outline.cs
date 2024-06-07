@@ -16,6 +16,8 @@ using UnityEngine;
 public class Outline : MonoBehaviour {
   private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
 
+  public static Material outlineMaterialSource;
+
   public enum Mode {
     OutlineAll,
     OutlineVisible,
@@ -85,7 +87,7 @@ public class Outline : MonoBehaviour {
     renderers = GetComponentsInChildren<Renderer>();
 
     // Instantiate outline materials
-    outlineMaterial = Instantiate(Resources.Load<Material>(@"Materials/Outline"));
+    outlineMaterial = Instantiate(outlineMaterialSource);
 
     outlineMaterial.name = "Outline (Instance)";
 
@@ -161,7 +163,7 @@ public class Outline : MonoBehaviour {
     foreach (var meshFilter in GetComponentsInChildren<MeshFilter>()) {
 
       // Skip duplicates
-      if (!bakedMeshes.Add(meshFilter.sharedMesh)) {
+      if (!meshFilter.sharedMesh.isReadable || !bakedMeshes.Add(meshFilter.sharedMesh)) {
         continue;
       }
 
@@ -179,7 +181,7 @@ public class Outline : MonoBehaviour {
     foreach (var meshFilter in GetComponentsInChildren<MeshFilter>()) {
 
       // Skip if smooth normals have already been adopted
-      if (!registeredMeshes.Add(meshFilter.sharedMesh)) {
+      if (!meshFilter.sharedMesh.isReadable || !registeredMeshes.Add(meshFilter.sharedMesh)) {
         continue;
       }
 
@@ -202,7 +204,7 @@ public class Outline : MonoBehaviour {
     foreach (var skinnedMeshRenderer in GetComponentsInChildren<SkinnedMeshRenderer>()) {
 
       // Skip if UV3 has already been reset
-      if (!registeredMeshes.Add(skinnedMeshRenderer.sharedMesh)) {
+      if (!skinnedMeshRenderer.sharedMesh.isReadable || !registeredMeshes.Add(skinnedMeshRenderer.sharedMesh)) {
         continue;
       }
 
