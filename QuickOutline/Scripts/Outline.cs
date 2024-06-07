@@ -26,10 +26,24 @@ public class Outline : MonoBehaviour {
     SilhouetteOnly
   }
 
+  public enum Visibility {
+    AlwaysVisible,
+    HmdOnly,
+    DesktopOnly
+  }
+
   public Mode OutlineMode {
     get { return outlineMode; }
     set {
       outlineMode = value;
+      needsUpdate = true;
+    }
+  }
+
+  public Visibility OutlineVisibility {
+    get { return outlineVisibility; }
+    set {
+      outlineVisibility = value;
       needsUpdate = true;
     }
   }
@@ -57,6 +71,9 @@ public class Outline : MonoBehaviour {
 
   [SerializeField]
   private Mode outlineMode;
+
+  [SerializeField]
+  private Visibility outlineVisibility;
 
   [SerializeField]
   private Color outlineColor = Color.white;
@@ -271,6 +288,7 @@ public class Outline : MonoBehaviour {
 
     // Apply properties according to mode
     outlineMaterial.SetColor("_OutlineColor", outlineColor);
+    outlineMaterial.SetInt("_OutlineVisibility", (int)outlineVisibility);
 
     switch (outlineMode) {
       case Mode.OutlineAll:

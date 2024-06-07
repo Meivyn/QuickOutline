@@ -13,6 +13,7 @@ Shader "Custom/Outline" {
 
     _OutlineColor("Outline Color", Color) = (1, 1, 1, 1)
     _OutlineWidth("Outline Width", Range(0, 10)) = 2
+    [KeywordEnum(Always Visible, HMD Only, Desktop Only)] _OutlineVisibility("Outline Visibility", Int) = 0
   }
 
   SubShader {
@@ -69,6 +70,11 @@ Shader "Custom/Outline" {
 
       uniform fixed4 _OutlineColor;
       uniform float _OutlineWidth;
+      uniform int _OutlineVisibility;
+
+      bool is_stereo() {
+        return unity_CameraProjection[0][2] != 0;
+      }
 
       v2f vert(appdata input) {
         v2f output;
@@ -81,7 +87,14 @@ Shader "Custom/Outline" {
         float3 viewPosition = UnityObjectToViewPos(input.vertex);
         float3 viewNormal = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, normal));
 
-        output.position = UnityViewToClipPos(viewPosition + viewNormal * -viewPosition.z * _OutlineWidth / 1000.0);
+        if (_OutlineVisibility == 1) {
+          output.position = UnityViewToClipPos((viewPosition + viewNormal * -viewPosition.z * _OutlineWidth / 1000.0) * is_stereo());
+        } else if (_OutlineVisibility == 2) {
+          output.position = UnityViewToClipPos((viewPosition + viewNormal * -viewPosition.z * _OutlineWidth / 1000.0) * !is_stereo());
+        } else {
+          output.position = UnityViewToClipPos(viewPosition + viewNormal * -viewPosition.z * _OutlineWidth / 1000.0);
+        }
+
         output.color = _OutlineColor;
 
         return output;
