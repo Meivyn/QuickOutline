@@ -13,7 +13,7 @@ Shader "Custom/Outline" {
 
     _OutlineColor("Outline Color", Color) = (1, 1, 1, 1)
     _OutlineWidth("Outline Width", Range(0, 10)) = 2
-    [KeywordEnum(Always Visible, HMD Only, Desktop Only)] _OutlineVisibility("Outline Visibility", Int) = 0
+    _OutlineVisibility("Outline Visibility", Int) = 0
   }
 
   SubShader {
